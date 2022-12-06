@@ -47,27 +47,39 @@ class App extends React.PureComponent {
         this.handleInput = this.handleInput.bind(this);
     }
 
+    countDown = () => {
+        let game = {...this.state.game};
+        let statistics = {...this.state.statistics};
+        game.counter--;
+        game.pbCounterStyle = {width: Math.round((game.counter * 5) / 3).toString().concat("%")};
+        if (game.counter <= 20) {
+            game.pbCounterClass = "progress-bar bg-danger";
+        } else if (game.counter <= 40) {
+            game.pbCounterClass = "progress-bar bg-warning";
+        } else {
+            game.pbCounterClass = "progress-bar bg-primary";
+        }
+        if (game.counter <= 0) {
+            statistics.loses++;
+            this.initializeGame(game)
+        }
+        this.setState({game, statistics}, this.saveGameStateToLocalStorage);
+    }
+
     componentDidMount() {
-        this.timerId = setInterval(() => {
-            let game = {...this.state.game};
-            let statistics = {...this.state.statistics};
-            game.counter--;
-            game.pbCounterStyle = {width: Math.round((game.counter * 5) / 3).toString().concat("%")};
-            if (game.counter <= 20) {
-                game.pbCounterClass = "progress-bar bg-danger";
-            } else if (game.counter <= 40) {
-                game.pbCounterClass = "progress-bar bg-warning";
-            } else {
-                game.pbCounterClass = "progress-bar bg-primary";
-            }
-            if (game.counter <= 0) {
-                statistics.loses++;
-                this.initializeGame(game)
-            }
-            this.setState({game, statistics}, () => {
-                // console.log(this.state.game.counter)
-            });
-        }, 1000);
+        this.timerId = setInterval(this.countDown, 1000);
+        let localStorageMastermindState = localStorage.getItem("mastermind-game");
+        if (localStorageMastermindState) {
+            let {game, statistics} = JSON.parse(localStorageMastermindState);
+            this.setState({game, statistics});
+        } else {
+            this.saveGameStateToLocalStorage();
+        }
+    }
+
+    saveGameStateToLocalStorage = () => {
+        let {game, statistics} = {...this.state};
+        localStorage.setItem("mastermind-game", JSON.stringify({game, statistics}));
     }
 
     createRandomDigit = (min, max) => {
@@ -98,7 +110,7 @@ class App extends React.PureComponent {
     handleInput(event) {
         let game = {...this.state.game};
         game.guess = Number(event.target.value);
-        this.setState({game});
+        this.setState({game},this.saveGameStateToLocalStorage);
     }
 
     evaluateMove = (guess, secret) => {
@@ -148,7 +160,7 @@ class App extends React.PureComponent {
                 game.moves.push(this.evaluateMove(game.guess, game.secret));
             }
         }
-        this.setState({game, statistics});
+        this.setState({game, statistics}, this.saveGameStateToLocalStorage);
     }
 
     render() {
