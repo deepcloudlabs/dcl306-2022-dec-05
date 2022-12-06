@@ -4,14 +4,12 @@ export function createRandomDigit(min, max) {
 
 export function createSecret(level) {
     let digits = [createRandomDigit(1, 9)];
-    console.log(level)
-    while (digits.length < 10) {
+    while (digits.length < level) {
         let digit = createRandomDigit(0, 9);
         if (digits.includes(digit)) continue;
         digits.push(digit);
     }
     let secret = digits.reduce((n, d) => 10 * n + d, 0);
-    console.log(secret);
     return secret;
 };
 

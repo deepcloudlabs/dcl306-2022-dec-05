@@ -15,7 +15,7 @@ import {useNavigate} from "react-router";
 function Mastermind() {
     let [game, setGame] = useState({
         level: 3,
-        secret: 123,
+        secret: createSecret(3),
         tries: 0,
         maxTries: 10,
         counter: 60,
@@ -112,8 +112,9 @@ function Mastermind() {
     };
     return (
         <Container>
+            <p></p>
             <Card>
-                <CardHeader title="Game Console"></CardHeader>
+                <CardHeader title="Game Console [December 6th, 2022]"></CardHeader>
                 <CardBody>
                     <FormGroup>
                         <Badge label="Game Level" className="bg-info" value={game.level}></Badge>
@@ -126,22 +127,26 @@ function Mastermind() {
                         <Badge label="Lives" className="bg-secondary" value={game.lives}></Badge>
                     </FormGroup>
                     <FormGroup>
-                        <h4 className="card-title">Counter:
+                        <h5 className="card-title">Counter:
                             <div className="progress">
                                 <div className={game.pbCounterClass}
                                      style={game.pbCounterStyle}>{game.counter}</div>
                             </div>
-                        </h4>
+                        </h5>
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="guess">Guess:</label>
-                        <input type="text"
-                               id="guess"
-                               name="guess"
-                               className="form-control"
-                               onChange={handleInput}
-                               value={game.guess}></input>
-                        <button onClick={play} className="btn btn-success">Play</button>
+                        <label className="form-label" htmlFor="guess">Guess:</label>
+                        <div className="input-group mb-3">
+                            <input type="text"
+                                   id="guess"
+                                   name="guess"
+                                   className="form-control"
+                                   onChange={handleInput}
+                                   value={game.guess}></input>
+                            <div className="input-group-append">
+                                <button onClick={play} className="btn btn-success">Play</button>
+                            </div>
+                        </div>
                     </FormGroup>
                 </CardBody>
             </Card>
