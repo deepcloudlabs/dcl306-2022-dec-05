@@ -29,25 +29,41 @@ class App extends React.PureComponent {
                 level: 3,
                 secret: this.createSecret(3),
                 tries: 0,
+                maxTries: 10,
+                counter: 60,
                 guess: 123,
-                moves: []
+                moves: [],
+                pbCounterClass: "progress-bar bg-primary",
+                pbCounterStyle: {width: "100%"}
             },
             statistics: {
                 wins: 0,
                 loses: 0
             }
         };
-        /*
-        setInterval(()=>{
-            let game = {...this.state.game};
-            game.tries++;
-            this.setState({game},() =>{
-               console.log(this.state.game.tries+", "+game.tries)
-            }); // {"game": game}
-        }, 1000)
-         */
-        this.handleInput = this.handleInput.bind(this);
         this.play = this.play.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+    }
+
+    componentDidMount() {
+        this.timerId = setInterval(() => {
+            let game = {...this.state.game};
+            game.counter--;
+            game.pbCounterStyle = {width: Math.round((game.counter*5)/3).toString().concat("%")};
+            if(game.counter<=20){
+                game.pbCounterClass = "progress-bar bg-danger";
+            }else if(game.counter<=40){
+                game.pbCounterClass = "progress-bar bg-warning";
+            }else {
+                game.pbCounterClass = "progress-bar bg-primary";
+            }
+            if (game.counter <= 0) {
+                //TODO: Player loses the game
+            }
+            this.setState({game}, () => {
+                // console.log(this.state.game.counter)
+            });
+        }, 1000);
     }
 
     createRandomDigit = (min, max) => {
@@ -116,7 +132,11 @@ class App extends React.PureComponent {
             }
             this.initializeGame(game);
         } else {
-            game.moves.push(this.evaluateMove(game.guess, game.secret));
+            if (game.tries >= game.maxTries) {
+                //TODO: Player loses the game
+            } else {
+                game.moves.push(this.evaluateMove(game.guess, game.secret));
+            }
         }
         this.setState({game});
     }
@@ -127,13 +147,19 @@ class App extends React.PureComponent {
                 <Card>
                     <CardHeader title="Game Console"></CardHeader>
                     <CardBody>
-                        <div className="form-group">
+                        <FormGroup>
                             <Badge label="Game Level" className="bg-info" value={this.state.game.level}></Badge>
-                        </div>
+                        </FormGroup>
                         <FormGroup show={this.state.game.tries > 0}>
                             <Badge label="Tries" className="bg-success" value={this.state.game.tries}></Badge>
+                            <Badge label="Max Tries" className="bg-danger" value={this.state.game.maxTries}></Badge>
                         </FormGroup>
-                        <div className="form-group">
+                        <FormGroup>
+                            <div className="progress">
+                                <div className={this.state.game.pbCounterClass} style={this.state.game.pbCounterStyle}>{this.state.game.counter}</div>
+                            </div>
+                        </FormGroup>
+                        <FormGroup>
                             <label htmlFor="guess">Guess:</label>
                             <input type="text"
                                    id="guess"
@@ -144,7 +170,7 @@ class App extends React.PureComponent {
                             <button onClick={this.play}
                                     className="btn btn-success">Play
                             </button>
-                        </div>
+                        </FormGroup>
                     </CardBody>
                 </Card>
                 <p></p>
