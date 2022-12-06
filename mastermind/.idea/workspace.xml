@@ -5,17 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d79e6eac-8124-4fea-8694-6c2f06a0f0ab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../mastermind-hooks-router/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../mastermind-hooks-router/.idea/mastermind-hooks-router.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../mastermind-hooks-router/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../mastermind-hooks-router/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../mastermind-hooks-router/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mastermind-hooks/src/component/common/badge.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mastermind-hooks/src/component/common/badge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mastermind-hooks-router/src/Mastermind.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mastermind-hooks-router/src/Mastermind.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mastermind-hooks/src/Mastermind.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mastermind-hooks/src/Mastermind.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mastermind-hooks/src/component/common/form-group.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mastermind-hooks/src/component/common/form-group.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mastermind-hooks/src/component/mastermind/move-evaluation.js" beforeDir="false" afterPath="$PROJECT_DIR$/../mastermind-hooks/src/component/mastermind/move-evaluation.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/common/badge.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/common/badge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/common/form-group.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/common/form-group.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/component/mastermind/move-evaluation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/component/mastermind/move-evaluation.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +73,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1670357690682</updated>
-      <workItem from="1670357691823" duration="962000" />
+      <workItem from="1670357691823" duration="1521000" />
     </task>
     <servers />
   </component>

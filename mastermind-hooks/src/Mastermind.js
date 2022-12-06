@@ -12,9 +12,9 @@ import TableHead from "./component/common/table-head";
 import {createSecret, loadGameStateFromLocalStorage, saveGameStateToLocalStorage} from "./utility/mastermind-util";
 
 function Mastermind() {
-    let [game, setGame] = useState({
+    let initialGameState = {
         level: 3,
-        secret: 123,
+        secret: createSecret(3),
         tries: 0,
         maxTries: 10,
         counter: 60,
@@ -22,14 +22,24 @@ function Mastermind() {
         moves: [],
         pbCounterClass: "progress-bar bg-primary",
         pbCounterStyle: {width: "100%"}
-    });
-    let [statistics, setStatistics] = useState({
+    };
+    let state = loadGameStateFromLocalStorage();
+    if (state && state.game) {
+        initialGameState = state.game;
+        if (initialGameState.level < 3 || initialGameState.level > 10)
+            initialGameState = 3;
+    }
+    let initialStatisticsState = {
         wins: 0,
         loses: 0
-    });
+    };
+    if (state && state.statistics) {
+        initialStatisticsState = state.statistics;
+    }
+    let [game, setGame] = useState(initialGameState);
+    let [statistics, setStatistics] = useState(initialStatisticsState);
     useEffect(() => {
         let timerId = setInterval(countDown, 1000);
-        let state = loadGameStateFromLocalStorage();
         return () => {
             clearInterval(timerId);
         }
@@ -57,7 +67,7 @@ function Mastermind() {
         }
         setGame(newGame);
         setStatistics(newStatistics);
-        saveGameStateToLocalStorage(newGame,newStatistics);
+        saveGameStateToLocalStorage(newGame, newStatistics);
     };
 
     let handleInput = (event) => {
@@ -95,7 +105,7 @@ function Mastermind() {
         }
         setGame(newGame);
         setStatistics(newStatistics);
-        saveGameStateToLocalStorage(newGame,newStatistics);
+        saveGameStateToLocalStorage(newGame, newStatistics);
     };
     return (
         <Container>
@@ -107,25 +117,31 @@ function Mastermind() {
                     </FormGroup>
                     <FormGroup show={game.tries > 0}>
                         <Badge label="Tries" className="bg-success" value={game.tries}></Badge>
+                    </FormGroup>
+                    <FormGroup show={game.tries > 0}>
                         <Badge label="Max Tries" className="bg-danger" value={game.maxTries}></Badge>
                     </FormGroup>
                     <FormGroup>
-                        <h4 className="card-title">Counter:
+                        <h5 className="card-title">Counter:
                             <div className="progress">
                                 <div className={game.pbCounterClass}
                                      style={game.pbCounterStyle}>{game.counter}</div>
                             </div>
-                        </h4>
+                        </h5>
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="guess">Guess:</label>
-                        <input type="text"
-                               id="guess"
-                               name="guess"
-                               className="form-control"
-                               onChange={handleInput}
-                               value={game.guess}></input>
-                        <button onClick={play} className="btn btn-success">Play</button>
+                        <label className="form-label" htmlFor="guess">Guess:</label>
+                        <div className="input-group mb-3">
+                            <input type="text"
+                                   id="guess"
+                                   name="guess"
+                                   className="form-control"
+                                   onChange={handleInput}
+                                   value={game.guess}></input>
+                            <div className="input-group-append">
+                                <button onClick={play} className="btn btn-success">Play</button>
+                            </div>
+                        </div>
                     </FormGroup>
                 </CardBody>
             </Card>

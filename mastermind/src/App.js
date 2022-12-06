@@ -173,6 +173,8 @@ class App extends React.PureComponent {
                         </FormGroup>
                         <FormGroup show={this.state.game.tries > 0}>
                             <Badge label="Tries" className="bg-success" value={this.state.game.tries}></Badge>
+                        </FormGroup>
+                        <FormGroup show={this.state.game.tries > 0}>
                             <Badge label="Max Tries" className="bg-danger" value={this.state.game.maxTries}></Badge>
                         </FormGroup>
                         <FormGroup>

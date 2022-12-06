@@ -134,6 +134,8 @@ function Mastermind() {
                     </FormGroup>
                     <FormGroup show={game.tries > 0}>
                         <Badge label="Tries" className="bg-success" value={game.tries}></Badge>
+                    </FormGroup>
+                    <FormGroup show={game.tries > 0}>
                         <Badge label="Max Tries" className="bg-danger" value={game.maxTries}></Badge>
                     </FormGroup>
                     <FormGroup>
