@@ -3,6 +3,11 @@ import './App.css';
 import CardHeader from "./component/card-header";
 import Badge from "./component/badge";
 import Move from "./model/move";
+import FormGroup from "./component/form-group";
+import Card from "./component/card";
+import TableHead from "./component/table-head";
+import CardBody from "./component/card-body";
+import Container from "./component/container";
 // Component:
 // 1. function-based: stateless component
 // 2. class-based: stateful component
@@ -118,16 +123,16 @@ class App extends React.PureComponent {
 
     render() {
         return (
-            <div className="container">
-                <div className="card">
+            <Container>
+                <Card>
                     <CardHeader title="Game Console"></CardHeader>
-                    <div className="card-body">
+                    <CardBody>
                         <div className="form-group">
                             <Badge label="Game Level" className="bg-info" value={this.state.game.level}></Badge>
                         </div>
-                        <div className="form-group">
+                        <FormGroup show={this.state.game.tries > 0}>
                             <Badge label="Tries" className="bg-success" value={this.state.game.tries}></Badge>
-                        </div>
+                        </FormGroup>
                         <div className="form-group">
                             <label htmlFor="guess">Guess:</label>
                             <input type="text"
@@ -140,26 +145,19 @@ class App extends React.PureComponent {
                                     className="btn btn-success">Play
                             </button>
                         </div>
-                    </div>
-                </div>
-                <div className="card">
+                    </CardBody>
+                </Card>
+                <p></p>
+                <Card show={this.state.game.moves.length > 0}>
                     <CardHeader title="Moves"></CardHeader>
-                    <div className="card-body">
+                    <CardBody>
                         <table className="table table-bordered table-responsive table-striped">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Guess</th>
-                                    <th>Perfect Match</th>
-                                    <th>Partial Match</th>
-                                    <th>Message</th>
-                                </tr>
-                            </thead>
+                            <TableHead headers="No,Guess,Perfect Match,Partial Match,Message"/>
                             <tbody>
                             {
-                                this.state.game.moves.map((move,index)=>
+                                this.state.game.moves.map((move, index) =>
                                     <tr key={move.guess + index.toString()}>
-                                        <td>{index+1}</td>
+                                        <td>{index + 1}</td>
                                         <td>{move.guess}</td>
                                         <td>{move.perfectMatch}</td>
                                         <td>{move.partialMatch}</td>
@@ -169,9 +167,9 @@ class App extends React.PureComponent {
                             }
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
+                    </CardBody>
+                </Card>
+            </Container>
         );
     }
 }
