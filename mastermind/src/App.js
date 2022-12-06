@@ -1,13 +1,15 @@
 import React from "react"
 import './App.css';
-import CardHeader from "./component/card-header";
-import Badge from "./component/badge";
+import CardHeader from "./component/common/card-header";
+import Badge from "./component/common/badge";
 import Move from "./model/move";
-import FormGroup from "./component/form-group";
-import Card from "./component/card";
-import TableHead from "./component/table-head";
-import CardBody from "./component/card-body";
-import Container from "./component/container";
+import FormGroup from "./component/common/form-group";
+import Card from "./component/common/card";
+import TableHead from "./component/common/table-head";
+import CardBody from "./component/common/card-body";
+import Container from "./component/common/container";
+import GameStatistics from "./component/statistics/game-statistics";
+import MoveEvaluation from "./component/mastermind/move-evaluation";
 // Component:
 // 1. function-based: stateless component
 // 2. class-based: stateful component
@@ -48,19 +50,21 @@ class App extends React.PureComponent {
     componentDidMount() {
         this.timerId = setInterval(() => {
             let game = {...this.state.game};
+            let statistics = {...this.state.statistics};
             game.counter--;
-            game.pbCounterStyle = {width: Math.round((game.counter*5)/3).toString().concat("%")};
-            if(game.counter<=20){
+            game.pbCounterStyle = {width: Math.round((game.counter * 5) / 3).toString().concat("%")};
+            if (game.counter <= 20) {
                 game.pbCounterClass = "progress-bar bg-danger";
-            }else if(game.counter<=40){
+            } else if (game.counter <= 40) {
                 game.pbCounterClass = "progress-bar bg-warning";
-            }else {
+            } else {
                 game.pbCounterClass = "progress-bar bg-primary";
             }
             if (game.counter <= 0) {
-                //TODO: Player loses the game
+                statistics.loses++;
+                this.initializeGame(game)
             }
-            this.setState({game}, () => {
+            this.setState({game, statistics}, () => {
                 // console.log(this.state.game.counter)
             });
         }, 1000);
@@ -86,6 +90,9 @@ class App extends React.PureComponent {
         game.tries = 0;
         game.moves = [];
         game.secret = this.createSecret(game.level);
+        game.counter = 60;
+        game.pbCounterClass = "progress-bar bg-primary";
+        game.pbCounterStyle = {width: "100%"};
     }
 
     handleInput(event) {
@@ -124,21 +131,24 @@ class App extends React.PureComponent {
 
     play() {
         let game = {...this.state.game}
+        let statistics = {...this.state.statistics}
         game.tries++;
         if (game.guess === game.secret) {
             game.level++;
+            statistics.wins++;
             if (game.level > 10) {
                 //TODO: Player wins the game
             }
             this.initializeGame(game);
         } else {
             if (game.tries >= game.maxTries) {
-                //TODO: Player loses the game
+                statistics.loses++;
+                this.initializeGame(game);
             } else {
                 game.moves.push(this.evaluateMove(game.guess, game.secret));
             }
         }
-        this.setState({game});
+        this.setState({game, statistics});
     }
 
     render() {
@@ -155,9 +165,12 @@ class App extends React.PureComponent {
                             <Badge label="Max Tries" className="bg-danger" value={this.state.game.maxTries}></Badge>
                         </FormGroup>
                         <FormGroup>
-                            <div className="progress">
-                                <div className={this.state.game.pbCounterClass} style={this.state.game.pbCounterStyle}>{this.state.game.counter}</div>
-                            </div>
+                            <h4 className="card-title">Counter:
+                                <div className="progress">
+                                    <div className={this.state.game.pbCounterClass}
+                                         style={this.state.game.pbCounterStyle}>{this.state.game.counter}</div>
+                                </div>
+                            </h4>
                         </FormGroup>
                         <FormGroup>
                             <label htmlFor="guess">Guess:</label>
@@ -178,16 +191,14 @@ class App extends React.PureComponent {
                     <CardHeader title="Moves"></CardHeader>
                     <CardBody>
                         <table className="table table-bordered table-responsive table-striped">
-                            <TableHead headers="No,Guess,Perfect Match,Partial Match,Message"/>
+                            <TableHead headers="No,Guess,Message"/>
                             <tbody>
                             {
                                 this.state.game.moves.map((move, index) =>
                                     <tr key={move.guess + index.toString()}>
                                         <td>{index + 1}</td>
                                         <td>{move.guess}</td>
-                                        <td>{move.perfectMatch}</td>
-                                        <td>{move.partialMatch}</td>
-                                        <td>{move.message}</td>
+                                        <td><MoveEvaluation move={move}/></td>
                                     </tr>
                                 )
                             }
@@ -195,6 +206,8 @@ class App extends React.PureComponent {
                         </table>
                     </CardBody>
                 </Card>
+                <p></p>
+                <GameStatistics statistics={this.state.statistics}/>
             </Container>
         );
     }
