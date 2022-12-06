@@ -94,7 +94,6 @@ class App extends React.PureComponent {
             digits.push(digit);
         }
         let secret = digits.reduce((n, d) => 10 * n + d, 0);
-        console.log(secret);
         return secret;
     }
 
@@ -110,7 +109,7 @@ class App extends React.PureComponent {
     handleInput(event) {
         let game = {...this.state.game};
         game.guess = Number(event.target.value);
-        this.setState({game},this.saveGameStateToLocalStorage);
+        this.setState({game}, this.saveGameStateToLocalStorage);
     }
 
     evaluateMove = (guess, secret) => {
@@ -177,24 +176,26 @@ class App extends React.PureComponent {
                             <Badge label="Max Tries" className="bg-danger" value={this.state.game.maxTries}></Badge>
                         </FormGroup>
                         <FormGroup>
-                            <h4 className="card-title">Counter:
+                            <h5 className="card-title">Counter:
                                 <div className="progress">
                                     <div className={this.state.game.pbCounterClass}
                                          style={this.state.game.pbCounterStyle}>{this.state.game.counter}</div>
                                 </div>
-                            </h4>
+                            </h5>
                         </FormGroup>
                         <FormGroup>
-                            <label htmlFor="guess">Guess:</label>
-                            <input type="text"
-                                   id="guess"
-                                   name="guess"
-                                   className="form-control"
-                                   onChange={this.handleInput}
-                                   value={this.state.game.guess}></input>
-                            <button onClick={this.play}
-                                    className="btn btn-success">Play
-                            </button>
+                            <label className="form-label" htmlFor="guess">Guess:</label>
+                            <div className="input-group mb-3">
+                                <input type="text"
+                                       id="guess"
+                                       name="guess"
+                                       className="form-control"
+                                       onChange={this.handleInput}
+                                       value={this.state.game.guess}></input>
+                                <div className="input-group-append">
+                                    <button onClick={this.play} className="btn btn-success">Play</button>
+                                </div>
+                            </div>
                         </FormGroup>
                     </CardBody>
                 </Card>
