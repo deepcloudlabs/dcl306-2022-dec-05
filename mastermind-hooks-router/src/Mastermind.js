@@ -10,6 +10,7 @@ import GameStatistics from "./component/statistics/game-statistics";
 import MoveEvaluation from "./component/mastermind/move-evaluation";
 import TableHead from "./component/common/table-head";
 import {createSecret, loadGameStateFromLocalStorage, saveGameStateToLocalStorage} from "./utility/mastermind-util";
+import {useNavigate} from "react-router";
 
 function Mastermind() {
     let [game, setGame] = useState({
@@ -19,6 +20,7 @@ function Mastermind() {
         maxTries: 10,
         counter: 60,
         guess: 123,
+        lives: 3,
         moves: [],
         pbCounterClass: "progress-bar bg-primary",
         pbCounterStyle: {width: "100%"}
@@ -34,6 +36,7 @@ function Mastermind() {
             clearInterval(timerId);
         }
     });
+    let navigate = useNavigate();
 
     let updateProgressBar = (newGame, {low, high}) => {
         if (newGame.counter <= low) {
@@ -53,11 +56,16 @@ function Mastermind() {
         updateProgressBar(newGame, {low: 30, high: 45});
         if (newGame.counter <= 0) {
             newStatistics.loses++;
+            newGame.lives--;
+            if (newGame.lives === 0) {
+                navigate("/loses", {replace: true});
+                return;
+            }
             initializeGame(newGame)
         }
         setGame(newGame);
         setStatistics(newStatistics);
-        saveGameStateToLocalStorage(newGame,newStatistics);
+        saveGameStateToLocalStorage(newGame, newStatistics);
     };
 
     let handleInput = (event) => {
@@ -80,14 +88,19 @@ function Mastermind() {
         newGame.tries++;
         if (newGame.guess === newGame.secret) {
             newGame.level++;
+            newGame.lives += 2;
             newStatistics.wins++;
-            if (newGame.level > 10) {
-                //TODO: Player wins the game
+            if (newGame.level >= 10) {
+                navigate("/wins", {replace: true});
             }
             initializeGame(newGame);
         } else {
             if (newGame.tries >= newGame.maxTries) {
                 newStatistics.loses++;
+                newGame.lives--;
+                if (newGame.lives === 0) {
+                    navigate("/loses", {replace: true});
+                }
                 initializeGame(newGame);
             } else {
                 newGame.moves.push(new Move(newGame.guess, newGame.secret));
@@ -95,7 +108,7 @@ function Mastermind() {
         }
         setGame(newGame);
         setStatistics(newStatistics);
-        saveGameStateToLocalStorage(newGame,newStatistics);
+        saveGameStateToLocalStorage(newGame, newStatistics);
     };
     return (
         <Container>
@@ -108,6 +121,9 @@ function Mastermind() {
                     <FormGroup show={game.tries > 0}>
                         <Badge label="Tries" className="bg-success" value={game.tries}></Badge>
                         <Badge label="Max Tries" className="bg-danger" value={game.maxTries}></Badge>
+                    </FormGroup>
+                    <FormGroup>
+                        <Badge label="Lives" className="bg-secondary" value={game.lives}></Badge>
                     </FormGroup>
                     <FormGroup>
                         <h4 className="card-title">Counter:
