@@ -13,7 +13,7 @@ import {createSecret, loadGameStateFromLocalStorage, saveGameStateToLocalStorage
 import {useNavigate} from "react-router";
 
 function Mastermind() {
-    let initializeGameState = {
+    let initialGameState = {
         level: 3,
         secret: createSecret(3),
         tries: 0,
@@ -27,7 +27,12 @@ function Mastermind() {
     };
     let state = loadGameStateFromLocalStorage();
     if (state && state.game) {
-        initializeGameState = state.game;
+        initialGameState = state.game;
+        if (initialGameState.lives <= 0) {
+            initialGameState.lives = 3;
+        }
+        if (initialGameState.level < 3 || initialGameState.level > 10)
+            initialGameState = 3;
     }
     let initialStatisticsState = {
         wins: 0,
@@ -36,7 +41,7 @@ function Mastermind() {
     if (state && state.statistics) {
         initialStatisticsState = state.statistics;
     }
-    let [game, setGame] = useState(initializeGameState);
+    let [game, setGame] = useState(initialGameState);
     let [statistics, setStatistics] = useState(initialStatisticsState);
     useEffect(() => {
         let timerId = setInterval(countDown, 1000);
@@ -65,7 +70,7 @@ function Mastermind() {
         if (newGame.counter <= 0) {
             newStatistics.loses++;
             newGame.lives--;
-            if (newGame.lives === 0) {
+            if (newGame.lives <= 0) {
                 navigate("/loses", {replace: true});
                 return;
             }
@@ -106,7 +111,7 @@ function Mastermind() {
             if (newGame.tries >= newGame.maxTries) {
                 newStatistics.loses++;
                 newGame.lives--;
-                if (newGame.lives === 0) {
+                if (newGame.lives <= 0) {
                     navigate("/loses", {replace: true});
                 }
                 initializeGame(newGame);
