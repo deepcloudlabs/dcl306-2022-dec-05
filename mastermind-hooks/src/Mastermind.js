@@ -2,13 +2,14 @@ import Container from "./component/common/container";
 import Card from "./component/common/card";
 import CardHeader from "./component/common/card-header";
 import CardBody from "./component/common/card-body";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import FormGroup from "./component/common/form-group";
 import Badge from "./component/common/badge";
 import Move from "./model/move";
 import GameStatistics from "./component/statistics/game-statistics";
 import MoveEvaluation from "./component/mastermind/move-evaluation";
 import TableHead from "./component/common/table-head";
+import {createSecret, loadGameStateFromLocalStorage, saveGameStateToLocalStorage} from "./utility/mastermind-util";
 
 function Mastermind() {
     let [game, setGame] = useState({
@@ -26,23 +27,45 @@ function Mastermind() {
         wins: 0,
         loses: 0
     });
+    useEffect(() => {
+        let timerId = setInterval(countDown, 1000);
+        let state = loadGameStateFromLocalStorage();
+        return () => {
+            clearInterval(timerId);
+        }
+    });
+
+    let updateProgressBar = (newGame, {low, high}) => {
+        if (newGame.counter <= low) {
+            newGame.pbCounterClass = "progress-bar bg-danger";
+        } else if (newGame.counter <= high) {
+            newGame.pbCounterClass = "progress-bar bg-warning";
+        } else {
+            newGame.pbCounterClass = "progress-bar bg-primary";
+        }
+    };
+
+    let countDown = () => {
+        let newGame = {...game};
+        let newStatistics = {...statistics};
+        newGame.counter--;
+        newGame.pbCounterStyle = {width: Math.round((newGame.counter * 5) / 3).toString().concat("%")};
+        updateProgressBar(newGame, {low: 30, high: 45});
+        if (newGame.counter <= 0) {
+            newStatistics.loses++;
+            initializeGame(newGame)
+        }
+        setGame(newGame);
+        setStatistics(newStatistics);
+        saveGameStateToLocalStorage(newGame,newStatistics);
+    };
+
     let handleInput = (event) => {
         let newGame = {...game};
         newGame.guess = Number(event.target.value);
         setGame(newGame);
     };
-    let createRandomDigit = (min, max) => {
-        return Math.floor((max - min + 1) * Math.random()) + min;
-    };
-    let createSecret = (level) => {
-        let digits = [createRandomDigit(1, 9)];
-        while (digits.length < level) {
-            let digit = createRandomDigit(0, 9);
-            if (digits.includes(digit)) continue;
-            digits.push(digit);
-        }
-        return digits.reduce((n, d) => 10 * n + d, 0);
-    };
+
     let initializeGame = (game) => {
         game.tries = 0;
         game.moves = [];
@@ -50,33 +73,6 @@ function Mastermind() {
         game.counter = 60;
         game.pbCounterClass = "progress-bar bg-primary";
         game.pbCounterStyle = {width: "100%"};
-    };
-    let evaluateMove = (guess, secret) => {
-        let guessAsString = guess.toString();
-        let secretAsString = secret.toString();
-        let perfectMatch = 0;
-        let partialMatch = 0;
-        for (let i = 0; i < guessAsString.length; i++) {
-            let g = guessAsString.charAt(i);
-            for (let j = 0; j < secretAsString.length; j++) {
-                let s = secretAsString.charAt(j);
-                if (g === s) {
-                    if (i === j) {
-                        perfectMatch++;
-                    } else {
-                        partialMatch++;
-                    }
-                }
-            }
-        }
-        let message = "";
-        if (perfectMatch === 0 && partialMatch === 0) {
-            message = "No Match";
-        } else {
-            if (partialMatch > 0) message += `-${partialMatch}`;
-            if (perfectMatch > 0) message += `+${perfectMatch}`;
-        }
-        return new Move(guess, perfectMatch, partialMatch, message);
     };
     let play = () => {
         let newGame = {...game}
@@ -94,11 +90,12 @@ function Mastermind() {
                 newStatistics.loses++;
                 initializeGame(newGame);
             } else {
-                newGame.moves.push(evaluateMove(newGame.guess, newGame.secret));
+                newGame.moves.push(new Move(newGame.guess, newGame.secret));
             }
         }
         setGame(newGame);
         setStatistics(newStatistics);
+        saveGameStateToLocalStorage(newGame,newStatistics);
     };
     return (
         <Container>
