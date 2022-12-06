@@ -14,8 +14,7 @@ export function createSecret(level) {
 };
 
 
-export function saveGameStateToLocalStorage(game,statistics){
-    let {newGame, newStatistics} = {...game,...statistics};
+export function saveGameStateToLocalStorage(newGame,newStatistics){
     localStorage.setItem(
         "mastermind-game",
         JSON.stringify(

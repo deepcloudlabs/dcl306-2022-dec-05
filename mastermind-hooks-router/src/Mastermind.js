@@ -13,7 +13,7 @@ import {createSecret, loadGameStateFromLocalStorage, saveGameStateToLocalStorage
 import {useNavigate} from "react-router";
 
 function Mastermind() {
-    let [game, setGame] = useState({
+    let initializeGameState = {
         level: 3,
         secret: createSecret(3),
         tries: 0,
@@ -24,14 +24,22 @@ function Mastermind() {
         moves: [],
         pbCounterClass: "progress-bar bg-primary",
         pbCounterStyle: {width: "100%"}
-    });
-    let [statistics, setStatistics] = useState({
+    };
+    let state = loadGameStateFromLocalStorage();
+    if (state && state.game) {
+        initializeGameState = state.game;
+    }
+    let initialStatisticsState = {
         wins: 0,
         loses: 0
-    });
+    };
+    if (state && state.statistics) {
+        initialStatisticsState = state.statistics;
+    }
+    let [game, setGame] = useState(initializeGameState);
+    let [statistics, setStatistics] = useState(initialStatisticsState);
     useEffect(() => {
         let timerId = setInterval(countDown, 1000);
-        let state = loadGameStateFromLocalStorage();
         return () => {
             clearInterval(timerId);
         }

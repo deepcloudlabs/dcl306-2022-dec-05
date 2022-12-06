@@ -1,4 +1,3 @@
-import Badge from "../common/badge";
 import React from "react";
 
 export default function MoveEvaluation({move}) {
