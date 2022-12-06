@@ -1,70 +1,56 @@
-# Getting Started with Create React App
+## MasterMind Game
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Mastermind is a simple number guessing game. Computer picks a **3-digit** random number where all digits are distinct.
+This number is a secret and a player tries to find the secret by guessing. Computer guides the player with a hint
+message summarizing how much the guess is close the secret. Assume that the secret number is **549** and player's first
+move is **123**. Computer evaluates the input **123** and produces "No Match!" message, hence there is no digit matched!
+Player's next move is **456**. Computer again evaluates the input 456 and produces the message **"-2"**: The digits 4
+and 5 are all matched but at the very wrong places! Player's next move is **567**. Computer again evaluates the input **
+567** and produces the message **"+1"**:
+Only one digit is matched at the correct place! Player's next move is **584**. Computer again evaluates the input **
+584** and produces the message **"+1-1"**: The digit 5 is matched at the correct place and the digit 4 is matched at the
+wrong place. Player's next move is **540**. Computer again evaluates the input **540** and produces the message **"
++2"**: The digits 5 and 4 are all matched at the correct places! Finally, the player inputs **549** and wins the game!
 
-## Available Scripts
+```
+Game Level : 3 
+Secret : 549 
+Player tries to guess the secret: 
+    123 -> No Match 
+    456 -> -2 
+    574 -> -1 +1 
+    548 -> +2 549 -> Next Game Level: 4 
+    ... 
+    Game Level: 10 -> Player wins!
 
-In the project directory, you can run:
+60 + 10 * (Game Level - 3) seconds 
+Number of moves: 10 + 2 * (Game Level - 3)
+3 Lives +1 Live at each level
+```
 
-### `npm start`
+## Local Storage
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The **Web Storage API** is a set of mechanisms that enable browsers to store key-value pairs. It is designed to be much
+more intuitive than using cookies.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The key-value pairs represent storage objects, which are similar to objects except they remain intact during page loads,
+and are always strings.
 
-### `npm test`
+The Web Storage API consists of two mechanisms: **sessionStorage** and **localStorage**. Both **sessionStorage** and **
+localStorage** maintain a separate storage area for each available origin for the duration of the page session.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The main difference between **sessionStorage** and **localStorage** is that sessionStorage only maintains a storage area
+while the browser is open (including when the page reloads or restores) while **localStorage** continues to store data
+after the browser is closed. In other words, whereas data stored in **sessionStorage** is cleared when the page is
+closed, data stored in **localStorage** does not expire.
 
-### `npm run build`
+**localStorage** is a property that allows JavaScript sites and apps to save key-value pairs in a web browser with no
+expiration date. This means the data stored in the browser will persist even after the browser window is closed.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+To use localStorage in your web applications, there are five methods to choose from:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **setItem()**: Add key and value to localStorage
+- **getItem()**: This is how you get items from localStorage
+- **removeItem()**: Remove an item by key from localStorage
+- **clear()**: Clear all localStorage
+- **key()**: Passed a number to retrieve the key of a localStorage
