@@ -28,6 +28,8 @@ function HrApp() {
         <Container>
             <p></p>
             <EmployeeForm value={employee}
+                          values={employees}
+                          setValues={setEmployees}
                           handleFileChange={handlePhotoChange}
                           onChange={handleInputChange}></EmployeeForm>
         </Container>
