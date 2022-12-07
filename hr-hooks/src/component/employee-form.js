@@ -8,7 +8,7 @@ import Image from "./common/image";
 import CheckBox from "./common/check-box";
 import TableHead from "./common/table-head";
 
-export default function EmployeeForm({value,values,setValues, onChange, handleFileChange}) {
+export default function EmployeeForm({value,setValue,values,setValues, onChange, handleFileChange}) {
     let departments = ["IT", "Sales", "Finance", "HR"];
 
     function hireEmployee() {
@@ -32,7 +32,13 @@ export default function EmployeeForm({value,values,setValues, onChange, handleFi
     }
 
     function findEmployeeById() {
-
+        fetch(`http://localhost:4001/employees/${value.identityNo}`,{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        }).then(response=>response.json())
+            .then(emp => setValue(emp));
     }
 
     function findEmployees() {
