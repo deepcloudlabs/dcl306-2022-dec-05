@@ -20,15 +20,53 @@ export default function EmployeeForm({value,setValue,values,setValues, onChange,
             },
             body: JSON.stringify(value)
         }).then(response => response.json())
-            .then(console.table)
+            .then( response => {
+                let emps= [...values];
+                emps.push(value);
+                setValues(emps);
+            })
     }
 
     function fireEmployee() {
+        fetch(`http://localhost:4001/employees/${value.identityNo}`,{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        }).then(response=>response.json())
+            .then(emp => {
+                setValue(emp);
+                setValues( [...values].filter(e => e.identityNo!==value.identityNo));
+            });
+    }
 
+    function fireEmployeeByIdentity(identity) {
+        fetch(`http://localhost:4001/employees/${identity}`,{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json"
+            }
+        }).then(response=>response.json())
+            .then(emp => {
+                setValue(emp);
+                setValues( [...values].filter(e => e.identityNo!==identity));
+            });
     }
 
     function updateEmployee() {
-
+        fetch("http://localhost:4001/employees", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(value)
+        }).then(response => response.json())
+            .then(response => {
+                let emps= [...values].filter(e => e.identityNo!==value.identityNo);
+                emps.push(value);
+                setValues(emps);
+            })
     }
 
     function findEmployeeById() {
@@ -51,6 +89,9 @@ export default function EmployeeForm({value,setValue,values,setValues, onChange,
             .then(employees => setValues(employees));
     }
 
+    function copyTableRowToModel(emp){
+        setValue(emp);
+    }
 
     return (
         <>
@@ -151,7 +192,7 @@ export default function EmployeeForm({value,setValue,values,setValues, onChange,
                         <tbody>
                         {
                             values.map( (emp,index) =>
-                               <tr>
+                               <tr key={emp.identityNo} onClick={() => copyTableRowToModel(emp)}>
                                    <td>{index+1}</td>
                                    <td><img alt="" className="img-thumbnail" src={emp.photo}/></td>
                                    <td>{emp.identityNo}</td>
@@ -161,7 +202,8 @@ export default function EmployeeForm({value,setValue,values,setValues, onChange,
                                    <td>{emp.birthYear}</td>
                                    <td>{emp.department}</td>
                                    <td>{emp.fulltime ? 'FULL TIME':'PART TIME'}</td>
-                                   <td><button className="btn btn-danger">Fire Employee</button></td>
+                                   <td><button  onClick={() => fireEmployeeByIdentity(emp.identityNo) }
+                                                className="btn btn-danger">Fire Employee</button></td>
                                </tr>
                             )
                         }

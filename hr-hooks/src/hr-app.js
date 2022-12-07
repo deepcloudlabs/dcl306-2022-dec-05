@@ -6,11 +6,7 @@ import EmployeeForm from "./component/employee-form";
 function HrApp() {
     let [employee, setEmployee] = useState(new Employee({}));
     let [employees, setEmployees] = useState([]);
-    let onChange = (event) => {
-        let newEmployee = {...employee};
-        newEmployee[event.target.name] = event.target.value;
-        setEmployee(newEmployee);
-    }
+    
     let handlePhotoChange = (photo) => {
         setEmployee({...employee, photo});
     }
