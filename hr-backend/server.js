@@ -42,6 +42,7 @@ const employeeSchema = new mongoose.Schema({
     "identityNo": {
         type: String,
         required: true,
+        unique: true,
         validate: [utils.tcKimlikNoValidator, 'You must provide a valid identity no.']
     },
     "photo": {
@@ -58,6 +59,7 @@ const employeeSchema = new mongoose.Schema({
     "iban": {
         type: String,
         required: true,
+        unique: true,
         validate: [utils.ibanValidator, 'You must provide a valid iban.']
     },
     "birthYear": {
